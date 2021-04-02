@@ -10,23 +10,27 @@ import {
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import LockOpenTwoToneIcon from '@material-ui/icons/LockOpenTwoTone';
 import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
-import React from 'react';
+import React, { useState } from 'react';
 import '../css/login.css';
 
-const Login = () => {
-  // const [values, setValues] = React.useState({
-  //   password: '',
-  //   showPassword: false
-  // });
+async function loginUser(name, pass) {
+  if (name === 'admin' && pass === 'admin') return true;
+  return false;
+}
 
-  const [showPassword, setShowPassword] = React.useState(false);
-  // const [password, setPassword] = React.useState('');
+const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [token, setToken] = useState(false);
+  const [username, setUserName] = useState();
+  const [password, setPassword] = useState();
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = (event) => event.preventDefault();
 
-  // const handleChange = (event) => {
-  //   setPassword(event.target.value);
-  // };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setToken(await loginUser(username, password));
+    console.log(token);
+  };
 
   const avatarStyle = { backgroundColor: '#30aa8e' };
   const marTop = { marginTop: '20px' };
@@ -51,50 +55,53 @@ const Login = () => {
             </Avatar>
             <h2>Sign In</h2>
           </Grid>
-          <TextField
-            style={marTop}
-            id="outlined-basic"
-            placeholder="Enter username"
-            label="Username"
-            variant="outlined"
-            fullWidth
-            required
-          />
+          <form onSubmit={handleSubmit}>
+            <TextField
+              style={marTop}
+              id="outlined-basic"
+              placeholder="Enter username"
+              onChange={(e) => setUserName(e.target.value)}
+              label="Username"
+              variant="outlined"
+              fullWidth
+              required
+            />
 
-          <TextField
-            style={marTop}
-            label="Password"
-            variant="outlined"
-            placeholder="Enter password"
-            type={showPassword ? 'text' : 'password'} // <-- This is where the magic happens
-            fullWidth
-            required
-            // onChange={handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
-          <Button
-            style={buttonSty}
-            type="submit"
-            variant="outlined"
-            color="primary"
-            fullWidth
-            endIcon={<SendOutlinedIcon />}
-          >
-            Sign in
-          </Button>
+            <TextField
+              style={marTop}
+              label="Password"
+              variant="outlined"
+              placeholder="Enter password"
+              onChange={(e) => setPassword(e.target.value)}
+              type={showPassword ? 'text' : 'password'}
+              fullWidth
+              required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+            <Button
+              style={buttonSty}
+              type="submit"
+              variant="outlined"
+              color="primary"
+              fullWidth
+              endIcon={<SendOutlinedIcon />}
+            >
+              Sign in
+            </Button>
+          </form>
         </div>
       </Paper>
     </Grid>
